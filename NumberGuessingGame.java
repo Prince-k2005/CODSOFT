@@ -1,57 +1,59 @@
-
+import java.util.Random;
 import java.util.Scanner;
 
-public class StudentGradeCalculator {
+public class NumberGuessingGame {
+
+    private static final int MAX_ATTEMPTS = 10;
+    private static int totalRounds = 0;
+    private static int totalWins = 0;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        boolean playAgain;
 
-        // Input the number of subjects
-        System.out.print("Enter the number of subjects: ");
-        int numberOfSubjects = scanner.nextInt();
-
-        // Array to store marks for each subject
-        int[] marks = new int[numberOfSubjects];
-        int totalMarks = 0;
-
-        // Input marks for each subject
-        for (int i = 0; i < numberOfSubjects; i++) {
-            System.out.printf("Enter marks for subject %d (out of 100): ", i + 1);
-            int mark = scanner.nextInt();
+        do {
+            playRound(scanner);
+            totalRounds++;
             
-            // Validate that the marks are within the valid range
-            while (mark < 0 || mark > 100) {
-                System.out.println("Invalid input. Marks should be between 0 and 100.");
-                System.out.printf("Re-enter marks for subject %d (out of 100): ", i + 1);
-                mark = scanner.nextInt();
-            }
-            
-            marks[i] = mark;
-            totalMarks += mark;
-        }
+            System.out.print("\nWould you like to play another round? (yes/no): ");
+            String response = scanner.next().trim().toLowerCase();
+            playAgain = response.equals("yes");
 
-        // Calculate average percentage
-        double averagePercentage = (double) totalMarks / numberOfSubjects;
+        } while (playAgain);
 
-        // Determine the grade
-        String grade;
-        if (averagePercentage >= 90) {
-            grade = "A";
-        } else if (averagePercentage >= 80) {
-            grade = "B";
-        } else if (averagePercentage >= 70) {
-            grade = "C";
-        } else if (averagePercentage >= 60) {
-            grade = "D";
-        } else {
-            grade = "F";
-        }
-
-        // Display results
-        System.out.printf("\nTotal Marks: %d\n", totalMarks);
-        System.out.printf("Average Percentage: %.2f%%\n", averagePercentage);
-        System.out.printf("Grade: %s\n", grade);
-
+        System.out.printf("\nGame Over! You played %d round(s) and won %d time(s).\n", totalRounds, totalWins);
         scanner.close();
+    }
+
+    private static void playRound(Scanner scanner) {
+        Random random = new Random();
+        int secretNumber = random.nextInt(100) + 1;
+        int attempts = 0;
+        boolean hasGuessedCorrectly = false;
+
+        System.out.println("\nGuess the number between 1 and 100. You have 10 attempts.");
+
+        while (attempts < MAX_ATTEMPTS) {
+            System.out.print("Enter your guess: ");
+            int guess = scanner.nextInt();
+            attempts++;
+
+            if (guess < secretNumber) {
+                System.out.println("Too low.");
+            } else if (guess > secretNumber) {
+                System.out.println("Too high.");
+            } else {
+                System.out.printf("Congratulations! You've guessed the number %d in %d attempts.\n", secretNumber, attempts);
+                totalWins++;
+                hasGuessedCorrectly = true;
+                break;
+            }
+
+            System.out.printf("You have %d attempt(s) remaining.\n", MAX_ATTEMPTS - attempts);
+        }
+
+        if (!hasGuessedCorrectly) {
+            System.out.printf("Sorry, you've run out of attempts. The number was %d.\n", secretNumber);
+        }
     }
 }
