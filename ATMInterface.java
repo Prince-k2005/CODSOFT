@@ -2,13 +2,12 @@ import java.util.Scanner;
 
 class ATM {
     private BankAccount account;
-   private Scanner scanner;
+    private Scanner scanner;
 
     public ATM(BankAccount account) {
         this.account = account;
-      scanner  = new Scanner(System.in);
+        scanner = new Scanner(System.in);
     }
-    
 
     public void run() {
         while (true) {
@@ -26,6 +25,7 @@ class ATM {
                     break;
                 case 4:
                     System.out.println("Exiting...");
+                    scanner.close(); // Ensure scanner is closed when exiting
                     return;
                 default:
                     System.out.println("Invalid choice. Please try again.");
@@ -34,7 +34,7 @@ class ATM {
     }
 
     private void displayMenu() {
-        System.out.println("ATM Menu:");
+        System.out.println("\nATM Menu:");
         System.out.println("1. Withdraw");
         System.out.println("2. Deposit");
         System.out.println("3. Check Balance");
@@ -83,7 +83,7 @@ class BankAccount {
     public void deposit(double amount) {
         balance += amount;
     }
-
+}
 
 public class ATMInterface {
     public static void main(String[] args) {
@@ -91,5 +91,4 @@ public class ATMInterface {
         ATM atm = new ATM(account);
         atm.run();
     }
-}
 }
