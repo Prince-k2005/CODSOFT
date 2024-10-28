@@ -1,0 +1,125 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+class ATM_GUI extends JFrame {
+    private BankAccount account;
+    private JLabel balanceLabel;
+    private JTextField amountField;
+
+    public ATM_GUI(BankAccount account) {
+        this.account = account;
+        
+        setTitle("ATM Interface");
+        setSize(300, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null); // Center the window
+
+        // Components
+        balanceLabel = new JLabel("Current Balance: $" + account.getBalance());
+        amountField = new JTextField(10);
+
+        JButton withdrawButton = new JButton("Withdraw");
+        JButton depositButton = new JButton("Deposit");
+        JButton checkBalanceButton = new JButton("Check Balance");
+        JButton exitButton = new JButton("Exit");
+
+        // Panel for buttons
+        JPanel panel = new JPanel();
+        panel.add(new JLabel("Amount: "));
+        panel.add(amountField);
+        panel.add(withdrawButton);
+        panel.add(depositButton);
+        panel.add(checkBalanceButton);
+        panel.add(exitButton);
+        
+        // Add balance label at top and panel with buttons at center
+        setLayout(new BorderLayout());
+        add(balanceLabel, BorderLayout.NORTH);
+        add(panel, BorderLayout.CENTER);
+
+        // Action listeners
+        withdrawButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                performWithdraw();
+            }
+        });
+
+        depositButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                performDeposit();
+            }
+        });
+
+        checkBalanceButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                updateBalanceLabel();
+            }
+        });
+
+        exitButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+    }
+
+    private void performWithdraw() {
+        try {
+            double amount = Double.parseDouble(amountField.getText());
+            if (amount > account.getBalance()) {
+                JOptionPane.showMessageDialog(this, "Insufficient balance.");
+            } else {
+                account.withdraw(amount);
+                JOptionPane.showMessageDialog(this, "Withdrawal successful.");
+                updateBalanceLabel();
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid amount.");
+        }
+    }
+
+    private void performDeposit() {
+        try {
+            double amount = Double.parseDouble(amountField.getText());
+            account.deposit(amount);
+            JOptionPane.showMessageDialog(this, "Deposit successful.");
+            updateBalanceLabel();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid amount.");
+        }
+    }
+
+    private void updateBalanceLabel() {
+        balanceLabel.setText("Current Balance: $" + account.getBalance());
+    }
+}
+
+class BankAccount {
+    private double balance;
+
+    public BankAccount(double initialBalance) {
+        this.balance = initialBalance;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void withdraw(double amount) {
+        balance -= amount;
+    }
+
+    public void deposit(double amount) {
+        balance += amount;
+    }
+}
+
+public class ATMInterface {
+    public static void main(String[] args) {
+        BankAccount account = new BankAccount(1000.0);
+        ATM_GUI atmGUI = new ATM_GUI(account);
+        atmGUI.setVisible(true);
+    }
+}
